@@ -11,6 +11,8 @@ import {
   Star,
   Quote,
   User,
+  Plus,
+  Minus,
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -81,7 +83,6 @@ const mushroomData = [
   },
 ];
 
-// --- NEW TESTIMONIAL DATA (8 Reviews) ---
 const testimonialData = [
   {
     id: 1,
@@ -168,14 +169,14 @@ const HeroSection = () => (
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.7 }}
       >
-       // Fresh, Organic, and Delivered to Your Door
+        Fresh, Organic, and Delivered to Your Door
       </motion.p>
     </div>
   </motion.div>
 );
 
-// --- MUSHROOM CAROUSEL ---
-const MushroomCarousel = ({ mushrooms, onMushroomClick }) => {
+// --- MUSHROOM CAROUSEL (with Glow Hover Effect) ---
+const MushroomCarousel = ({ mushrooms }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: "start" },
     [Autoplay({ delay: 4000 })]
@@ -197,25 +198,17 @@ const MushroomCarousel = ({ mushrooms, onMushroomClick }) => {
             <motion.div
               className="flex-grow-0 flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/3 pl-4"
               key={mushroom.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5 }}
             >
-              <div
-                className="group relative bg-slate-800/50 rounded-xl p-6 border border-green-500/20 cursor-pointer transition-all duration-300 text-center shadow-[0_0_15px_rgba(74,222,128,0)] hover:shadow-[0_0_25px_rgba(74,222,128,0.5)] hover:border-green-500/50"
-                onClick={() => onMushroomClick(mushroom)}
-              >
+              <div className="group relative bg-slate-800/50 rounded-xl p-6 border border-green-500/20 text-center transition-shadow duration-300 shadow-[0_0_15px_rgba(74,222,128,0)] hover:shadow-[0_0_25px_rgba(74,222,128,0.5)]">
                 <img
                   src={mushroom.image}
                   alt={mushroom.name}
-                  className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-48 object-cover rounded-lg"
                   loading="lazy"
                 />
                 <h3 className="text-2xl font-bold text-white mt-4">
                   {mushroom.name}
                 </h3>
-                <div className="absolute inset-0 bg-gradient-to-t from-green-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
               </div>
             </motion.div>
           ))}
@@ -237,121 +230,174 @@ const MushroomCarousel = ({ mushrooms, onMushroomClick }) => {
   );
 };
 
-// --- REDESIGNED TESTIMONIALS CAROUSEL (Corrected Arrow Centering) ---
-const TestimonialsSection = () => {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' }, [Autoplay({ delay: 5000, stopOnInteraction: false })]);
-    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
-    return (
-        <div className="bg-slate-900/50 py-16">
-            {/* The 'relative' class has been REMOVED from this container */}
-            <div className="w-full max-w-7xl mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">What Our Customers Say</h2>
-                
-                {/* This NEW 'relative' wrapper now correctly positions the arrows */}
-                <div className="relative">
-                    <div className="overflow-hidden" ref={emblaRef}>
-                        <div className="flex -ml-4">
-                            {testimonialData.map((testimonial) => (
-                                <div className="flex-grow-0 flex-shrink-0 basis-full sm:basis-1/2 lg:basis-1/3 pl-4" key={testimonial.id}>
-                                    <div className="relative h-full bg-slate-800 p-8 rounded-xl border border-green-500/20 flex flex-col justify-between">
-                                        <Quote className="absolute top-4 right-4 text-green-500/10" size={64} />
-                                        <div className="z-10">
-                                            <div className="flex items-center mb-4">
-                                                <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center mr-4">
-                                                    <User className="text-green-400" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-white font-bold">{testimonial.name}</p>
-                                                    <div className="flex text-yellow-400">
-                                                        {[...Array(testimonial.stars)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="text-gray-300 italic">"{testimonial.quote}"</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <button onClick={scrollPrev} className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-slate-800/50 text-white p-2 rounded-full hover:bg-green-500 transition-colors z-10"><ChevronLeft size={24} /></button>
-                    <button onClick={scrollNext} className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-slate-800/50 text-white p-2 rounded-full hover:bg-green-500 transition-colors z-10"><ChevronRight size={24} /></button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// --- PRODUCT MODAL ---
-const MushroomModal = ({ mushroom, onClose }) => {
-  if (!mushroom) return null;
-  const handleAddToCart = () => {
-    toast.success(`${mushroom.name} added to cart!`, {
+// --- QUANTITY SELECTOR COMPONENT ---
+const QuantitySelector = ({ mushroomName }) => {
+  const [quantity, setQuantity] = useState(1);
+  const handleAddToCartClick = () => {
+    toast.success(`${quantity} x ${mushroomName} added to cart!`, {
       style: { background: "#1e293b", color: "#fff" },
       iconTheme: { primary: "#22c55e", secondary: "#fff" },
     });
   };
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      >
-        <motion.div
-          className="bg-slate-900 rounded-2xl border border-green-500/30 w-full max-w-4xl max-h-[90vh] overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-8 relative"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          onClick={(e) => e.stopPropagation()}
+    <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
+      <div className="flex items-center gap-2 bg-slate-700/50 rounded-full p-1">
+        <button
+          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+          className="w-10 h-10 rounded-full bg-slate-600 hover:bg-slate-500 flex items-center justify-center transition-colors"
         >
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-          >
-            <X size={28} />
-          </button>
-          <img
-            src={mushroom.image}
-            alt={mushroom.name}
-            className="w-full h-full object-cover rounded-xl"
-          />
-          <div className="flex flex-col">
-            <h2 className="text-4xl font-extrabold text-white mb-2">
-              {mushroom.name}
-            </h2>
-            <p className="text-2xl font-bold text-green-400 mb-4">
-              ${mushroom.price.toFixed(2)}
-            </p>
-            <p className="text-gray-300 leading-relaxed mb-6">
-              {mushroom.fullDescription}
-            </p>
-            <div className="mt-auto pt-6 flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 flex items-center justify-center gap-2 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
-              >
-                <ShoppingCart size={20} /> Add to Cart
-              </button>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-slate-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-600 transition-all duration-300 transform hover:scale-105">
-                <Zap size={20} /> Buy Now
-              </button>
-            </div>
+          <Minus size={16} />
+        </button>
+        <span className="w-12 text-center text-lg font-bold">{quantity}</span>
+        <button
+          onClick={() => setQuantity((q) => q + 1)}
+          className="w-10 h-10 rounded-full bg-slate-600 hover:bg-slate-500 flex items-center justify-center transition-colors"
+        >
+          <Plus size={16} />
+        </button>
+      </div>
+      <button
+        onClick={handleAddToCartClick}
+        className="flex-1 w-full sm:w-auto flex items-center justify-center gap-2 bg-green-600 text-white font-bold py-3 px-6 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
+      >
+        <ShoppingCart size={20} /> Add to Cart
+      </button>
+      <button className="flex-1 w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-700 text-white font-bold py-3 px-6 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:scale-105">
+        <Zap size={20} /> Buy Now
+      </button>
+    </div>
+  );
+};
+
+// --- PRODUCT LIST SECTION (with Circular Images) ---
+const ProductListSection = ({ mushrooms }) => (
+  <div className="w-full max-w-7xl mx-auto py-16 px-4 space-y-24">
+    {mushrooms.map((mushroom, index) => (
+      <div
+        key={mushroom.id}
+        className={`grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12`}
+      >
+        {/* Image Column with Circular Glow */}
+        <motion.div
+          className={`relative group ${index % 2 !== 0 ? "md:order-last" : ""}`} // Alternates image position
+          initial={{ opacity: 0, x: index % 2 !== 0 ? 100 : -100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="relative w-full max-w-sm mx-auto aspect-square">
+            <div className="absolute -inset-4 bg-green-500/40 rounded-full blur-3xl opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <img
+              src={mushroom.image}
+              alt={mushroom.name}
+              className="relative w-full h-full object-cover rounded-full shadow-2xl shadow-black/50"
+            />
           </div>
         </motion.div>
-      </motion.div>
-    </AnimatePresence>
+
+        {/* Details Column */}
+        <motion.div
+          className="flex flex-col"
+          initial={{ opacity: 0, x: index % 2 !== 0 ? -100 : 100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3">
+            {mushroom.name}
+          </h2>
+          <p className="text-3xl font-bold text-green-400 mb-5">
+            ${mushroom.price.toFixed(2)}
+          </p>
+          <p className="text-gray-300 leading-relaxed">
+            {mushroom.fullDescription}
+          </p>
+          <QuantitySelector mushroomName={mushroom.name} />
+        </motion.div>
+      </div>
+    ))}
+  </div>
+);
+
+// --- TESTIMONIALS CAROUSEL ---
+const TestimonialsSection = () => {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
+  );
+  const scrollPrev = useCallback(
+    () => emblaApi && emblaApi.scrollPrev(),
+    [emblaApi]
+  );
+  const scrollNext = useCallback(
+    () => emblaApi && emblaApi.scrollNext(),
+    [emblaApi]
+  );
+
+  return (
+    <div className="bg-slate-900/50 py-16">
+      <div className="w-full max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+          What Our Customers Say
+        </h2>
+        <div className="relative">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex -ml-4">
+              {testimonialData.map((testimonial) => (
+                <div
+                  className="flex-grow-0 flex-shrink-0 basis-full sm:basis-1/2 lg:basis-1/3 pl-4"
+                  key={testimonial.id}
+                >
+                  <div className="relative h-full bg-slate-800 p-8 rounded-xl border border-green-500/20 flex flex-col justify-between">
+                    <Quote
+                      className="absolute top-4 right-4 text-green-500/10"
+                      size={64}
+                    />
+                    <div className="z-10">
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center mr-4">
+                          <User className="text-green-400" />
+                        </div>
+                        <div>
+                          <p className="text-white font-bold">
+                            {testimonial.name}
+                          </p>
+                          <div className="flex text-yellow-400">
+                            {[...Array(testimonial.stars)].map((_, i) => (
+                              <Star key={i} size={16} fill="currentColor" />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 italic">
+                        "{testimonial.quote}"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={scrollPrev}
+            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-slate-800/50 text-white p-2 rounded-full hover:bg-green-500 transition-colors z-10"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            onClick={scrollNext}
+            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-slate-800/50 text-white p-2 rounded-full hover:bg-green-500 transition-colors z-10"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
 // --- MAIN PAGE COMPONENT ---
 export default function MushroomsPage() {
-  const [selectedMushroom, setSelectedMushroom] = useState(null);
   const [filter, setFilter] = useState("All");
   const categories = ["All", "Culinary", "Gourmet", "Medicinal"];
   const filteredMushrooms =
@@ -374,26 +420,13 @@ export default function MushroomsPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Our Signature Collection
           </h2>
-          <div className="flex justify-center gap-2 md:gap-4 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setFilter(category)}
-                className={`px-4 py-2 text-sm md:text-base font-semibold rounded-full transition-colors ${
-                  filter === category
-                    ? "bg-green-600 text-white"
-                    : "bg-slate-700/50 text-gray-300 hover:bg-slate-600"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          <MushroomCarousel
-            mushrooms={filteredMushrooms}
-            onMushroomClick={setSelectedMushroom}
-          />
+          <p className="text-center text-gray-400 mb-8">
+            A quick look at our fresh, hand-picked varieties.
+          </p>
+          <MushroomCarousel mushrooms={filteredMushrooms} />
         </motion.div>
+
+        <ProductListSection mushrooms={mushroomData} />
 
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -404,10 +437,6 @@ export default function MushroomsPage() {
           <TestimonialsSection />
         </motion.div>
       </main>
-      <MushroomModal
-        mushroom={selectedMushroom}
-        onClose={() => setSelectedMushroom(null)}
-      />
     </div>
   );
 }
