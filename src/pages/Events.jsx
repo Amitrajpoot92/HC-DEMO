@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Calendar, ArrowRight, X } from "lucide-react";
 
 // --- IMAGE IMPORTS ---
-import heroImage from "../assets/hero.webp";
+import heroImage from "../assets/hero.webp"; // This is now used by the new HeroSection
 import patnaEventImg from "../assets/mushrooms/Img1.png";
 import delhiEventImg from "../assets/mushrooms/Img2.png";
 import mumbaiEventImg from "../assets/mushrooms/Img3.png";
@@ -63,6 +63,39 @@ const eventsData = [
   },
 ];
 
+// --- NEW HERO SECTION COMPONENT ---
+const HeroSection = () => (
+  <motion.div className="relative w-full h-[50vh] flex items-center justify-center overflow-hidden">
+    <motion.img
+      src={heroImage}
+      alt="Exotic Mushrooms Banner"
+      className="absolute inset-0 w-full h-full object-cover blur-sm"
+      initial={{ scale: 1.1, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 1.2 }}
+    />
+    <div className="absolute inset-0 bg-black/60"></div>
+    <div className="relative z-10 text-center px-4">
+      <motion.h1
+        className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+      >
+        MushroomMart Events
+      </motion.h1>
+      <motion.p
+        className="text-lg md:text-xl text-green-200 mt-2 drop-shadow"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.7 }}
+      >
+        // Join our fungi community and celebrate the magic of mushrooms.
+      </motion.p>
+    </div>
+  </motion.div>
+);
+
 // --- EVENT DETAIL MODAL ---
 const EventModal = ({ event, onClose }) => {
   if (!event) return null;
@@ -84,7 +117,6 @@ const EventModal = ({ event, onClose }) => {
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Left side: Scrolling Image Gallery */}
           <div className="h-full overflow-y-auto p-4 md:p-6">
             <div className="grid grid-cols-1 gap-4">
               {event.gallery.map((imgSrc, index) => (
@@ -100,8 +132,6 @@ const EventModal = ({ event, onClose }) => {
               ))}
             </div>
           </div>
-
-          {/* Right side: Event Details */}
           <div className="relative flex flex-col p-8 bg-slate-800/30">
             <button
               onClick={onClose}
@@ -134,7 +164,7 @@ const EventModal = ({ event, onClose }) => {
 
 // --- MAIN EVENTS PAGE COMPONENT ---
 export default function EventsPage() {
-  const [selectedEvent, setSelectedEvent] = useState(null); // State for the modal
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const upcomingEvents = eventsData.filter((e) => e.status === "upcoming");
   const pastEvents = eventsData.filter((e) => e.status === "past");
   const featuredEvent = upcomingEvents.find((e) => e.featured);
@@ -147,28 +177,10 @@ export default function EventsPage() {
         onClose={() => setSelectedEvent(null)}
       />
 
-      {/* Header */}
-      <div className="text-center pt-24 pb-16">
-        <motion.h1
-          className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-green-400 to-lime-500 bg-clip-text text-transparent"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          MushroomMart Events
-        </motion.h1>
-        <motion.p
-          className="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          Join our fungi community. Explore workshops, festivals, and fairs
-          celebrating the magic of mushrooms.
-        </motion.p>
-      </div>
+      {/* The old header has been replaced with the new HeroSection component */}
+      <HeroSection />
 
-      <main className="w-full max-w-7xl mx-auto px-4 pb-24">
+      <main className="w-full max-w-7xl mx-auto px-4 py-16 sm:py-24">
         {/* Upcoming Events Section */}
         <motion.section
           initial={{ opacity: 0, y: 50 }}
