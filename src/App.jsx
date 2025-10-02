@@ -9,6 +9,7 @@ import Mushrooms from "./pages/Mushrooms";
 import Events from "./pages/Events";
 import FarmerSupport from "./pages/FarmerSupport";
 import Contact from "./pages/Contact";
+import Knowledge from "./pages/Knowledge";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/farmer-support" element={<FarmerSupport />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/knowledge" element={<Knowledge />} />
         </Routes>
         <ChatWidget />
       </main>

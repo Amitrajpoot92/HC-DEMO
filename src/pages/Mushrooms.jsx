@@ -1,4 +1,4 @@
- import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -14,71 +14,100 @@ import {
   Minus,
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
-// --- IMAGE IMPORTS ---
+// --- IMAGE IMPORTS from knowledge folder ---
 import heroImage from "../assets/hero.webp";
-import img1 from "../assets/mushrooms/Img1.png";
-import img2 from "../assets/mushrooms/Img2.png";
-import img3 from "../assets/mushrooms/Img3.png";
-import img4 from "../assets/mushrooms/Img4.png";
-import img5 from "../assets/mushrooms/Img5.png";
-import img6 from "../assets/mushrooms/Img6.png";
+import button from "../assets/knowledge/button.webp";
+import oyster from "../assets/knowledge/oyster.webp";
+import shitake from "../assets/knowledge/shitake.webp";
+import milky from "../assets/knowledge/milky.webp";
+import king from "../assets/knowledge/king.webp";
+import enoki from "../assets/knowledge/enoki.webp";
+import cremini from "../assets/knowledge/cremini.webp";
+import protobelo from "../assets/knowledge/protobelo.webp";
 
-// --- MOCK DATA ---
+// --- MOCK DATA with slugs (for scrolling) ---
 const mushroomData = [
   {
     id: 1,
-    name: "Shiitake",
-    image: img1,
+    slug: "button",
+    name: "Button Mushroom",
+    image: button,
     category: "Culinary",
     price: 12.99,
     fullDescription:
-      "Shiitake mushrooms are prized for their rich, savory taste and health benefits. They are excellent in soups, sauces, and as a meat substitute.",
+      "Mild flavor, commonly used in soups, curries, pizzas, and salads. Rich in B vitamins, selenium, and low-calorie.",
   },
   {
     id: 2,
-    name: "Oyster",
-    image: img2,
+    slug: "oyster",
+    name: "Oyster Mushroom",
+    image: oyster,
     category: "Gourmet",
     price: 10.5,
     fullDescription:
-      "Oyster mushrooms have a subtle, delicate flavor and are incredibly versatile, making them a favorite for sautés, pastas, and soups.",
+      "Delicate taste, often used in stir-fries, soups, and as a meat substitute. High in protein and antioxidants.",
   },
   {
     id: 3,
-    name: "Lion's Mane",
-    image: img3,
+    slug: "shiitake",
+    name: "Shiitake Mushroom",
+    image: shitake,
     category: "Medicinal",
     price: 18.0,
     fullDescription:
-      "Lion's Mane is renowned for its crab or lobster-like flavor and its potential neuroprotective benefits.",
+      "Rich, umami flavor. Used in Asian dishes and supplements. Boosts immunity and has medicinal compounds.",
   },
   {
     id: 4,
-    name: "Portobello",
-    image: img4,
+    slug: "milky",
+    name: "Milky Mushroom",
+    image: milky,
     category: "Culinary",
     price: 8.75,
     fullDescription:
-      "Portobello mushrooms are a fantastic, hearty vegetarian option for grilling as burgers or stuffing due to their deep, meaty texture.",
+      "Soft texture with a slightly sweet taste. Popular in Indian curries and stir-fries. High in dietary fiber and vitamins.",
   },
   {
     id: 5,
-    name: "Morel",
-    image: img5,
+    slug: "king",
+    name: "King Oyster Mushroom",
+    image: king,
     category: "Gourmet",
-    price: 45.0,
+    price: 15.0,
     fullDescription:
-      "Morels are a gourmet wild mushroom sought-after by chefs worldwide for their complex, earthy flavor.",
+      "Meaty, firm texture. Great for grilling, soups, and gourmet dishes. Rich in protein, low in fat.",
   },
   {
     id: 6,
-    name: "Chanterelle",
-    image: img6,
-    category: "Gourmet",
-    price: 25.0,
+    slug: "enoki",
+    name: "Enoki Mushroom",
+    image: enoki,
+    category: "Culinary",
+    price: 14.0,
     fullDescription:
-      "Golden Chanterelles are known for their beautiful color, slightly fruity aroma, and a taste that is subtly peppery.",
+      "Mild, crunchy mushrooms used in soups, salads, and sushi. Contains antioxidants and supports digestion.",
+  },
+  {
+    id: 7,
+    slug: "cremini",
+    name: "Cremini Mushroom",
+    image: cremini,
+    category: "Culinary",
+    price: 9.0,
+    fullDescription:
+      "Deeper flavor than button mushrooms. Used in pastas, stews, and curries. Rich in antioxidants.",
+  },
+  {
+    id: 8,
+    slug: "portobello",
+    name: "Portobello Mushroom",
+    image: protobelo,
+    category: "Gourmet",
+    price: 20.0,
+    fullDescription:
+      "Large, meaty mushrooms. Perfect for grilling as burgers or stuffing. Rich in nutrients.",
   },
 ];
 
@@ -103,41 +132,6 @@ const testimonialData = [
     stars: 5,
     quote:
       "MushroomMart is my go-to for gourmet mushrooms. The Chanterelles were perfect for my risotto.",
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    stars: 5,
-    quote:
-      "The Monthly Discovery Box is fantastic! It's a joy to try a new, exotic mushroom every month.",
-  },
-  {
-    id: 5,
-    name: "Emily White",
-    stars: 4,
-    quote:
-      "Great quality Portobellos, perfect for grilling. The website is beautiful and easy to use.",
-  },
-  {
-    id: 6,
-    name: "Tom Hernandez",
-    stars: 5,
-    quote:
-      "As a chef, I rely on quality ingredients. MushroomMart delivers every single time. The morels were exceptional.",
-  },
-  {
-    id: 7,
-    name: "Chloe Garcia",
-    stars: 5,
-    quote:
-      "The packaging is excellent, ensuring the mushrooms arrive fresh and undamaged. Highly recommend!",
-  },
-  {
-    id: 8,
-    name: "Ben Carter",
-    stars: 5,
-    quote:
-      "I'm new to cooking with gourmet mushrooms, and this site has made it so accessible. The oyster mushrooms were a great start.",
   },
 ];
 
@@ -174,9 +168,8 @@ const HeroSection = () => (
   </motion.div>
 );
 
-
 // --- MUSHROOM CAROUSEL ---
-const MushroomCarousel = ({ mushrooms }) => {
+const MushroomCarousel = ({ mushrooms, onImageClick }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: "start" },
     [Autoplay({ delay: 4000 })]
@@ -196,8 +189,9 @@ const MushroomCarousel = ({ mushrooms }) => {
         <div className="flex -ml-4">
           {mushrooms.map((mushroom) => (
             <motion.div
-              className="flex-grow-0 flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/3 pl-4"
+              className="flex-grow-0 flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/3 pl-4 cursor-pointer"
               key={mushroom.id}
+              onClick={() => onImageClick(mushroom.slug)}
             >
               <div className="group relative bg-white rounded-xl p-6 border border-green-300/30 text-center transition-shadow duration-300 shadow-[0_0_15px_rgba(74,222,128,0)] hover:shadow-[0_0_25px_rgba(74,222,128,0.5)]">
                 <img
@@ -272,11 +266,13 @@ const QuantitySelector = ({ mushroomName }) => {
 };
 
 // --- PRODUCT LIST SECTION ---
-const ProductListSection = ({ mushrooms }) => (
+const ProductListSection = ({ mushrooms, productRefs }) => (
   <div className="w-full max-w-7xl mx-auto py-16 px-4 space-y-24">
     {mushrooms.map((mushroom, index) => (
       <div
         key={mushroom.id}
+        id={mushroom.slug}
+        ref={productRefs[mushroom.slug]}
         className={`grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12`}
       >
         <motion.div
@@ -309,7 +305,9 @@ const ProductListSection = ({ mushrooms }) => (
           <p className="text-3xl font-bold text-green-600 mb-5">
             ${mushroom.price.toFixed(2)}
           </p>
-          <p className="text-gray-800 leading-relaxed">{mushroom.fullDescription}</p>
+          <p className="text-gray-800 leading-relaxed">
+            {mushroom.fullDescription}
+          </p>
           <QuantitySelector mushroomName={mushroom.name} />
         </motion.div>
       </div>
@@ -367,7 +365,9 @@ const TestimonialsSection = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="text-gray-700 italic">"{testimonial.quote}"</p>
+                      <p className="text-gray-700 italic">
+                        "{testimonial.quote}"
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -401,6 +401,33 @@ export default function MushroomsPage() {
       ? mushroomData
       : mushroomData.filter((m) => m.category === filter);
 
+  // refs for product scroll
+  const productRefs = mushroomData.reduce((acc, mushroom) => {
+    acc[mushroom.slug] = useRef(null);
+    return acc;
+  }, {});
+
+  const handleImageClick = (slug) => {
+    productRefs[slug].current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  // ✅ Auto scroll when page loads with hash
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const element = productRefs[id]?.current;
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 300);
+      }
+    }
+  }, [location, productRefs]);
+
   return (
     <div className="bg-[#fdfbe9] min-h-screen text-gray-900 font-sans">
       <Toaster position="top-center" />
@@ -416,22 +443,38 @@ export default function MushroomsPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">
             Our Signature Collection
           </h2>
-          <p className="text-center text-gray-700 mb-8">
-            A quick look at our fresh, hand-picked varieties.
+          <p className="text-center text-gray-700 mb-8 max-w-2xl mx-auto">
+            From earthy Shiitake to delicate Oyster, explore nature's gourmet
+            treasures cultivated with care.
           </p>
-          <MushroomCarousel mushrooms={filteredMushrooms} />
+
+          <div className="flex justify-center gap-4 mb-8">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-4 py-2 rounded-full font-medium transition-colors ${
+                  filter === cat
+                    ? "bg-green-600 text-white"
+                    : "bg-green-100 text-gray-800 hover:bg-green-200"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <MushroomCarousel
+            mushrooms={filteredMushrooms}
+            onImageClick={handleImageClick}
+          />
         </motion.div>
 
-        <ProductListSection mushrooms={mushroomData} />
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8 }}
-        >
-          <TestimonialsSection />
-        </motion.div>
+        <ProductListSection
+          mushrooms={filteredMushrooms}
+          productRefs={productRefs}
+        />
+        <TestimonialsSection />
       </main>
     </div>
   );
