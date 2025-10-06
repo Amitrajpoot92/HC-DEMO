@@ -1,7 +1,8 @@
- import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
-import { FiMenu, FiX } from "react-icons/fi";
-import { Sprout, ShoppingBasket, Calendar, BookOpen, Users, Phone } from "lucide-react";
+ // src/components/NavbarMain.jsx
+
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 
 const NavbarMain = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,149 +10,90 @@ const NavbarMain = () => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+  const toggleServices = () => setServicesOpen(!servicesOpen);
+
+  const navLinkClasses = ({ isActive }) =>
+    `transition hover:text-yellow-400 ${
+      isActive ? "text-yellow-400 font-semibold" : "text-white"
+    }`;
+
+  // Services names from Home.jsx "What We Offer" section
+  const services = [
+    "Property On-Boarding",
+    "Tenant Discovery",
+    "Tenant On Board",
+    "Property Inspections",
+    "Maintenance Services",
+    "Personalized Dashboard",
+  ];
 
   return (
     <header
-      className="flex justify-between items-center px-8 py-4 sticky top-0 z-50 w-full text-gray-900 backdrop-blur-sm bg-[#fdfbe9]/90 font-orbitron"
+      className="flex justify-between items-center px-8 py-4 sticky top-0 z-50 w-full text-white backdrop-blur-sm bg-[#0f0425]/80 shadow-md font-orbitron"
       style={{ fontFamily: "Orbitron, sans-serif" }}
     >
       {/* Logo */}
       <div className="text-xl md:text-2xl font-medium tracking-wider uppercase">
-        MushroomMart
+        UrbanFungi Estates
       </div>
 
-      {/* Hamburger (mobile) */}
+      {/* Mobile menu toggle */}
       <div className="flex md:hidden cursor-pointer" onClick={toggleMenu}>
-        {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        {menuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
       </div>
 
-      {/* Nav Links */}
+      {/* Navigation Links */}
       <nav
         className={`${
           menuOpen
-            ? "flex flex-col items-center gap-4 py-4 absolute top-full left-0 right-0 bg-[#fdfbe9] md:hidden backdrop-blur-md shadow-lg"
-            : "hidden md:flex items-center gap-8"
+            ? "flex flex-col items-center gap-4 py-4 absolute top-full left-0 right-0 bg-[#0f0425] md:hidden"
+            : "hidden md:flex flex-1 justify-center items-center gap-8"
         }`}
       >
-        <NavLink
-          to="/"
-          onClick={closeMenu}
-          className={({ isActive }) =>
-            `uppercase text-sm tracking-wide transition-colors ${
-              isActive
-                ? "text-[#f3cc00] border-b-2 border-[#f3cc00]"
-                : "text-gray-900 hover:text-[#95e500]"
-            }`
-          }
-        >
+        <NavLink to="/" className={navLinkClasses} onClick={closeMenu}>
           Home
         </NavLink>
 
-        <NavLink
-          to="/mushrooms"
-          onClick={closeMenu}
-          className={({ isActive }) =>
-            `uppercase text-sm tracking-wide transition-colors ${
-              isActive
-                ? "text-[#f3cc00] border-b-2 border-[#f3cc00]"
-                : "text-gray-900 hover:text-[#95e500]"
-            }`
-          }
-        >
-          Mushrooms
-        </NavLink>
-
-        <NavLink
-          to="/events"
-          onClick={closeMenu}
-          className={({ isActive }) =>
-            `uppercase text-sm tracking-wide transition-colors ${
-              isActive
-                ? "text-[#f3cc00] border-b-2 border-[#f3cc00]"
-                : "text-gray-900 hover:text-[#95e500]"
-            }`
-          }
-        >
-          Events
-        </NavLink>
-
-        <NavLink
-          to="/farmer-support"
-          onClick={closeMenu}
-          className={({ isActive }) =>
-            `uppercase text-sm tracking-wide transition-colors ${
-              isActive
-                ? "text-[#f3cc00] border-b-2 border-[#f3cc00]"
-                : "text-gray-900 hover:text-[#95e500]"
-            }`
-          }
-        >
-          Farmer Support
-        </NavLink>
-
         {/* Services Dropdown */}
-        <div
-          className="relative group"
-          onMouseEnter={() => setServicesOpen(true)}
-          onMouseLeave={() => setServicesOpen(false)}
-        >
-          <button className="uppercase text-sm tracking-wide text-gray-900 hover:text-[#95e500]">
-            Services
-          </button>
-          <div
-            className={`absolute top-full left-0 right-0 md:left-auto md:right-0 mt-2 bg-[#fdfbe9] shadow-lg rounded-md py-2 w-full md:w-64 transition-all duration-200 ${
-              servicesOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
+        <div className="relative group md:ml-4">
+          <button
+            onClick={toggleServices}
+            className="flex items-center gap-1 transition hover:text-yellow-400 text-white"
           >
-            <Link
-              to="/farmer-support"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <Sprout size={18} className="text-[#95e500]" />
-              Cultivation Support
-            </Link>
-            <Link
-              to="/mushrooms"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <ShoppingBasket size={18} className="text-[#f3cc00]" />
-              Buy Fresh Mushrooms
-            </Link>
-            <Link
-              to="/events"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <Calendar size={18} className="text-[#95e500]" />
-              Community Events
-            </Link>
-            <Link
-              to="/knowledge"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <BookOpen size={18} className="text-[#f3cc00]" />
-              Knowledge Hub
-            </Link>
-            <Link
-              to="/community"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <Users size={18} className="text-[#95e500]" />
-              Farmer Community
-            </Link>
-            <Link
-              to="/contact"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-[#95e500] hover:to-[#f3cc00] rounded-md transition"
-            >
-              <Phone size={18} className="text-[#f3cc00]" />
-              Contact Us
-            </Link>
+            Services <FiChevronDown />
+          </button>
+
+          {/* Desktop dropdown */}
+          <div className="hidden md:group-hover:flex absolute top-full left-1/2 transform -translate-x-1/2 bg-[#0f0425] flex-col py-2 w-64 rounded shadow-lg">
+            {services.map((s, i) => (
+              <NavLink
+                to={`/services/${s.replace(/\s+/g, "-").toLowerCase()}`}
+                key={i}
+                className="px-4 py-2 text-white hover:bg-yellow-500 hover:text-black transition"
+              >
+                {s}
+              </NavLink>
+            ))}
           </div>
+
+          {/* Mobile dropdown */}
+          {menuOpen && servicesOpen && (
+            <div className="flex flex-col mt-2 bg-[#1b0737] rounded w-full">
+              {services.map((s, i) => (
+                <NavLink
+                  to={`/services/${s.replace(/\s+/g, "-").toLowerCase()}`}
+                  key={i}
+                  className="px-4 py-2 text-white hover:bg-yellow-500 hover:text-black transition"
+                  onClick={() => {
+                    closeMenu();
+                    setServicesOpen(false);
+                  }}
+                >
+                  {s}
+                </NavLink>
+              ))}
+            </div>
+          )}
         </div>
       </nav>
     </header>
