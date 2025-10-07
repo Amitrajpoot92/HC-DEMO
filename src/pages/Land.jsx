@@ -1,19 +1,28 @@
-import React from "react";
+ import React from "react";
+import villaImage from "../assets/realestate/ap6.png"; // ✅ Correct way to import image
 
-const Land = () => {
+const Villa = () => {
   return (
-    <div className="p-8 text-center">
-      <h1 className="text-3xl font-bold mb-4">Lands & Plots</h1>
-      <p className="text-gray-700 mb-6">
-        Buy, sell, or invest in open lands and residential plots in prime locations.
+    <div className="p-8 text-center bg-gray-50 min-h-screen">
+      <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        Beachside Villas
+      </h1>
+
+      <p className="text-gray-700 text-lg mb-6 max-w-2xl mx-auto">
+        Experience luxury living in stunning beachside villas featuring private
+        pools, elegant interiors, and serene ocean views — perfect for peaceful
+        getaways.
       </p>
-      <img
-        src="/assets/land.jpg"
-        alt="Land"
-        className="rounded-xl shadow-lg mx-auto w-3/4"
-      />
+
+      <div className="flex justify-center">
+        <img
+          src={villaImage}
+          alt="Luxury Beachside Villa"
+          className="rounded-2xl shadow-2xl w-full max-w-3xl transform hover:scale-105 transition-transform duration-500"
+        />
+      </div>
     </div>
   );
 };
 
-export default Land;
+export default Villa;
