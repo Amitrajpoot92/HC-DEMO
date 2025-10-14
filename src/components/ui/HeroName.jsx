@@ -35,7 +35,6 @@ const Hero = () => {
     x.set(offsetX);
     y.set(offsetY);
 
-    // Grid movement
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
     gridX.set((e.clientX - centerX) / 50);
@@ -91,7 +90,6 @@ const Hero = () => {
           y: gridY,
         }}
       >
-        {/* Horizontal lines */}
         {Array.from({ length: 40 }).map((_, i) => (
           <div
             key={`h-${i}`}
@@ -99,8 +97,6 @@ const Hero = () => {
             style={{ top: `${(i * 100) / 40}%` }}
           />
         ))}
-
-        {/* Vertical lines */}
         {Array.from({ length: 80 }).map((_, i) => (
           <div
             key={`v-${i}`}
@@ -108,8 +104,6 @@ const Hero = () => {
             style={{ left: `${(i * 100) / 80}%` }}
           />
         ))}
-
-        {/* Soft gradient overlay for 3D effect */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-black/0 to-white/5 pointer-events-none" />
       </motion.div>
 
@@ -123,22 +117,26 @@ const Hero = () => {
           <span className="font-serif italic font-normal text-7xl md:text-8xl text-[#fa6304]">
             Smarter Living
           </span>
+        </p>
+
+        {/* Fixed-height container for animated text */}
+        <div className="mt-2 md:mt-0 h-[3rem] lg:h-[3.5rem] overflow-hidden">
           <span
-            className="ml-2 text-3xl md:text-4xl font-sans text-transparent stroke-white"
+            className="text-3xl md:text-4xl font-sans text-transparent stroke-white block"
             style={{
               WebkitTextStroke: "1px white",
+              minHeight: "1em",
             }}
           >
             {text}
           </span>
-        </p>
+        </div>
 
         <h2 className="mt-3 font-sans text-lg md:text-xl text-[#8af6fc] font-normal leading-relaxed">
           Discover Your Perfect Property Among Our Million Options
         </h2>
 
         <div className="flex items-center mt-8 space-x-4 relative">
-          {/* Floating buttons */}
           <motion.a
             animate={{
               y: [0, -8, 0],
@@ -170,21 +168,18 @@ const Hero = () => {
         <motion.div
           ref={cardRef}
           style={{ rotateX, rotateY }}
-          className="relative w-[280px] sm:w-[340px] md:w-[400px] lg:w-[460px] xl:w-[500px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+          className="relative w-[80%] sm:w-[300px] md:w-[400px] lg:w-[460px] xl:w-[500px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
         >
           <motion.img
             src={ap3}
             alt="Real Estate"
-            className="w-full h-full object-cover rounded-3xl"
+            className="w-full h-auto object-cover rounded-3xl"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
           />
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#fa6304]/30 to-[#8af6fc]/20 shadow-2xl pointer-events-none" />
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#fa6304]/30 to-[#8af6fc]/20 pointer-events-none" />
         </motion.div>
-
-        {/* Soft glow shadow */}
-        <div className="absolute bottom-[-30px] w-[75%] h-10 bg-[#fa6304]/40 blur-3xl opacity-40 rounded-full" />
       </div>
     </div>
   );

@@ -10,7 +10,6 @@ import rf4 from "../assets/RentalFraud/rf4.png";
 import rf2 from "../assets/RentalFraud/rf2.png";
 
 export default function RentFraud() {
-  // --- Rent Fraud Cases Data ---
   const fraudCases = [
     {
       title: "Bengaluru Lease Scam (₹50 Crore)",
@@ -38,7 +37,6 @@ export default function RentFraud() {
     },
   ];
 
-  // --- Props (autoplay, active slide handling) ---
   const autoplay = true;
   const [active, setActive] = useState(0);
 
@@ -56,35 +54,10 @@ export default function RentFraud() {
 
   const randomRotateY = () => Math.floor(Math.random() * 21) - 10;
 
-  // --- Hero-style typing animation (single text only) ---
-  const headingWord = "Rental Fraud";
-  const [text, setText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const typingSpeed = isDeleting ? 50 : 120;
-
-    const timeout = setTimeout(() => {
-      setText((prev) =>
-        isDeleting
-          ? headingWord.substring(0, prev.length - 1)
-          : headingWord.substring(0, prev.length + 1)
-      );
-
-      if (!isDeleting && text === headingWord) {
-        setTimeout(() => setIsDeleting(true), 800);
-      } else if (isDeleting && text === "") {
-        setIsDeleting(false);
-      }
-    }, typingSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [text, isDeleting]);
-
   return (
-    <div className="w-full h-screen bg-black text-white py-12 px-4 md:px-8 lg:px-12 font-sans">
-      {/* --- Heading Section --- */}
-      <div className="text-center mb-4">
+    <div className="w-full min-h-screen bg-black text-white py-10 px-4 md:px-8 lg:px-12 font-sans">
+      {/* Heading */}
+      <div className="text-center mb-6">
         <h1
           className="text-5xl md:text-6xl font-extrabold tracking-wide uppercase"
           style={{
@@ -92,16 +65,16 @@ export default function RentFraud() {
             WebkitTextStroke: "1px white",
           }}
         >
-          {text}
+          Rental Fraud
         </h1>
-        <p className="mt-1 text-lg md:text-xl text-[#8af6fc]">
+        <p className="mt-2 text-lg md:text-xl text-[#8af6fc]">
           Stay Informed: Latest News and Alerts on Rental Scams
         </p>
       </div>
 
-      <div className="mx-auto max-w-5xl grid grid-cols-1 gap-8 md:grid-cols-2 h-full items-center">
-        {/* Left Image Section */}
-        <div className="flex items-center justify-center h-full">
+      <div className="mx-auto max-w-5xl grid grid-cols-1 gap-8 md:grid-cols-2 items-center">
+        {/* Left Image */}
+        <div className="flex items-center justify-center">
           <div className="relative h-80 w-full">
             <AnimatePresence>
               {fraudCases.map((caseItem, index) => (
@@ -134,10 +107,8 @@ export default function RentFraud() {
                   <img
                     src={caseItem.src}
                     alt={caseItem.title}
-                    width={500}
-                    height={500}
-                    draggable={false}
                     className="h-full w-full object-cover object-center rounded-3xl"
+                    draggable={false}
                   />
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#fa6304]/30 to-[#8af6fc]/20 pointer-events-none" />
                 </motion.div>
@@ -146,8 +117,8 @@ export default function RentFraud() {
           </div>
         </div>
 
-        {/* Right Text Section */}
-        <div className="flex flex-col justify-center h-full">
+        {/* Right Text */}
+        <div className="flex flex-col justify-center">
           <motion.div
             key={active}
             initial={{ y: 20, opacity: 0 }}
@@ -159,7 +130,7 @@ export default function RentFraud() {
               {fraudCases[active].title}
             </h3>
             <p className="text-sm text-[#8af6fc]">{fraudCases[active].source}</p>
-            <motion.p className="mt-4 text-lg text-gray-300">
+            <motion.p className="mt-4 text-lg text-gray-300 leading-relaxed">
               {fraudCases[active].details.split(" ").map((word, index) => (
                 <motion.span
                   key={index}
@@ -177,32 +148,39 @@ export default function RentFraud() {
               ))}
             </motion.p>
 
-            {/* Know More Button */}
-            <motion.a
-              href={fraudCases[active].link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center px-6 py-2 font-sans text-base font-semibold rounded-full bg-[#fa6304] text-white border-2 border-transparent hover:bg-[#ff8645] transition-all duration-200"
-              animate={{ y: [0, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            >
-              Know More
-            </motion.a>
+            {/* Buttons Section */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 mt-5">
+              {/* Know More */}
+              <motion.a
+                href={fraudCases[active].link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-2 font-sans text-base font-semibold rounded-full bg-[#fa6304] text-white border-2 border-transparent hover:bg-[#ff8645] transition-all duration-200"
+                animate={{ y: [0, -5, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 3,
+                  ease: "easeInOut",
+                }}
+              >
+                Know More
+              </motion.a>
 
-            {/* Navigation Buttons */}
-            <div className="flex gap-4 mt-6">
-              <button
-                onClick={handlePrev}
-                className="flex items-center justify-center w-12 h-12 rounded-full bg-[#fa6304] hover:bg-[#ff8645] transition-colors shadow-lg"
-              >
-                <IconArrowLeft className="w-6 h-6 text-white" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="flex items-center justify-center w-12 h-12 rounded-full bg-[#fa6304] hover:bg-[#ff8645] transition-colors shadow-lg"
-              >
-                <IconArrowRight className="w-6 h-6 text-white" />
-              </button>
+              {/* Arrows */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handlePrev}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-[#fa6304] hover:bg-[#ff8645] transition-colors shadow-lg"
+                >
+                  <IconArrowLeft className="w-5 h-5 text-white" />
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-[#fa6304] hover:bg-[#ff8645] transition-colors shadow-lg"
+                >
+                  <IconArrowRight className="w-5 h-5 text-white" />
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

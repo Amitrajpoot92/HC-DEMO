@@ -1,6 +1,6 @@
  // src/components/OperationalStates.jsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // 🖼️ Import city images
@@ -58,6 +58,8 @@ const statesData = [
 
 const OperationalStates = () => {
   const [frontIndex, setFrontIndex] = useState(statesData.length - 1);
+  const leftPanelRef = useRef(null);
+  const [panelHeight, setPanelHeight] = useState(0);
 
   const handleNext = () =>
     setFrontIndex((prev) => (prev + 1) % statesData.length);
@@ -72,6 +74,13 @@ const OperationalStates = () => {
       handleNext();
     }, 2000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Calculate max height for left panel
+  useEffect(() => {
+    if (leftPanelRef.current) {
+      setPanelHeight(leftPanelRef.current.scrollHeight);
+    }
   }, []);
 
   return (
@@ -89,7 +98,11 @@ const OperationalStates = () => {
 
       <div className="relative max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {/* Left Detail Panel */}
-        <div className="flex flex-col justify-start mt-12 md:mt-16 space-y-4">
+        <div
+          className="flex flex-col justify-start mt-12 md:mt-16 space-y-4"
+          style={{ minHeight: panelHeight }}
+          ref={leftPanelRef}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={frontIndex}
@@ -99,8 +112,7 @@ const OperationalStates = () => {
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="bg-white/10 p-6 md:p-8 rounded-2xl backdrop-blur-lg border border-white/20"
               style={{
-                boxShadow:
-                  "0 0 20px 4px #8af6fc55, 0 0 40px 10px #8af6fc33",
+                boxShadow: "0 0 20px 4px #8af6fc55, 0 0 40px 10px #8af6fc33",
               }}
             >
               <h3 className="text-2xl md:text-3xl font-bold mb-1 text-[#fa6304]">
