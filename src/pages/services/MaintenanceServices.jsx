@@ -1,234 +1,322 @@
  // src/pages/services/MaintenanceServices.jsx
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
   CheckCircle,
-  Wrench,
-  ShieldCheck,
-  UserCheck,
-  ClipboardList,
+  FileText,
   Camera,
+  Home,
+  ClipboardList,
+  Globe,
+  ChevronDown,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import heroImage from "../../assets/realestate/ap3.png";
 
-// --- IMAGE IMPORT ---
-import heroImage from "../../assets/realestate/ap7.png";
+// ✅ Animated Testimonials Component
+const AnimatedTestimonials = () => {
+  const testimonials = [
+    {
+      quote:
+        "The maintenance team is always prompt and professional. Their service has kept our property in perfect condition.",
+      name: "Ravi Sharma",
+      designation: "Owner, Urban Apartments",
+      src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop",
+    },
+    {
+      quote:
+        "Quick response and excellent workmanship. The platform makes scheduling maintenance hassle-free.",
+      name: "Neha Singh",
+      designation: "Property Manager, City Flats",
+      src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop",
+    },
+    {
+      quote:
+        "Reliable, efficient, and professional. Maintenance has never been easier.",
+      name: "Amit Verma",
+      designation: "Owner, Green Residency",
+      src: "https://images.unsplash.com/photo-1636041293178-808a6762ab39?q=80&w=3464&auto=format&fit=crop",
+    },
+  ];
 
-const MaintenanceServices = () => {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(
+      () => setActive((prev) => (prev + 1) % testimonials.length),
+      5000
+    );
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="bg-[#fdfbe9] text-gray-900 font-sans">
-      {/* Hero Section */}
-      <section className="relative w-full h-[50vh] flex items-center justify-center overflow-hidden">
-        <img
+    <section className="py-20 px-6 md:px-20 bg-black text-white text-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fa6304]/10 via-black to-[#8af6fc]/10" />
+      <h2 className="text-4xl font-bold mb-10 relative z-10 text-[#8af6fc]">
+        What Our Clients Say
+      </h2>
+      <div className="max-w-4xl mx-auto relative z-10">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row items-center gap-8"
+        >
+          <motion.img
+            src={testimonials[active].src}
+            alt={testimonials[active].name}
+            className="w-48 h-48 rounded-full object-cover shadow-2xl border-4 border-[#fa6304]/50"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          />
+          <div className="text-left">
+            <p className="text-lg italic text-gray-300 mb-4">
+              “{testimonials[active].quote}”
+            </p>
+            <h3 className="text-2xl font-semibold text-[#fa6304]">
+              {testimonials[active].name}
+            </h3>
+            <p className="text-sm text-gray-400">
+              {testimonials[active].designation}
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ✅ Main Component
+const MaintenanceServices = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const faqs = [
+    {
+      question: "What types of maintenance services do you provide?",
+      answer:
+        "We provide electrical, plumbing, HVAC, carpentry, painting, cleaning, and general repair services for residential and commercial properties.",
+    },
+    {
+      question: "How can I schedule a maintenance request?",
+      answer:
+        "You can schedule a service request directly from your dashboard or by contacting our customer support.",
+    },
+    {
+      question: "What is the response time for maintenance requests?",
+      answer:
+        "Our team responds within 24 hours for general requests, and urgent cases are prioritized for immediate attention.",
+    },
+    {
+      question: "Are your technicians certified?",
+      answer:
+        "Yes, all our technicians are trained, certified, and background-checked to ensure high-quality service.",
+    },
+    {
+      question: "Do you provide service guarantees?",
+      answer:
+        "Yes, we provide a 30-day satisfaction guarantee for all maintenance services completed through our platform.",
+    },
+  ];
+
+  const toggleFAQ = (index) =>
+    setActiveIndex(activeIndex === index ? null : index);
+
+  return (
+    <div className="bg-black text-white font-sans overflow-hidden">
+      {/* ---------------- HERO SECTION ---------------- */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <motion.img
           src={heroImage}
           alt="Maintenance Services Banner"
-          className="absolute inset-0 w-full h-full object-cover blur-sm"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 3 }}
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black" />
         <div className="relative z-10 text-center px-4">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg mb-4"
-            initial={{ y: 20, opacity: 0 }}
+            className="text-5xl md:text-6xl font-bold text-[#fa6304] mb-4"
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            Hassle-Free Property Maintenance
+            Maintenance Services
           </motion.h1>
           <motion.p
-            className="text-lg md:text-xl text-white drop-shadow"
+            className="text-lg md:text-xl text-gray-200 mb-8"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 1, delay: 0.2 }}
           >
-            Quick repairs, verified technicians, and 24×7 service — all managed digitally.
+            From repairs to regular upkeep — we ensure your property remains in
+            perfect condition with professional care.
           </motion.p>
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className="mt-6 bg-white text-black font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition"
+            className="bg-[#fa6304] text-white px-8 py-3 rounded-full shadow-lg hover:bg-[#ff8645] transition"
           >
-            Book Maintenance Now
+            Schedule Service Now
           </motion.button>
         </div>
       </section>
 
-      {/* Overview */}
-      <section className="py-16 px-6 md:px-16 bg-white">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Keeping Your Property in Top Shape
-        </h2>
-        <p className="text-gray-700 text-center max-w-3xl mx-auto leading-relaxed">
-          Maintenance is the backbone of property management. Propdial provides a network of trusted professionals for every repair and maintenance need — ensuring your property remains in top condition year-round.
+      {/* ---------------- INTRO SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-16 bg-gradient-to-br from-[#0a0a0a] via-black to-[#111]">
+        <motion.h2
+          className="text-4xl font-bold mb-6 text-center text-[#8af6fc]"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Hassle-Free Property Maintenance
+        </motion.h2>
+        <p className="text-gray-300 text-center max-w-3xl mx-auto leading-relaxed">
+          Maintaining a property can be stressful. Our Maintenance Services make
+          it simple — from preventive care to emergency repairs, handled by
+          certified professionals.
         </p>
       </section>
 
-      {/* Categories of Maintenance */}
-      <section className="py-16 px-6 md:px-20 bg-[#fdfbe9]">
-        <h2 className="text-3xl font-bold mb-10 text-center">
-          Categories of Maintenance
+      {/* ---------------- PROCESS SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#fa6304]/10 via-transparent to-[#8af6fc]/10" />
+        <h2 className="text-4xl font-bold mb-10 text-center text-[#fa6304]">
+          Our Process (Step-by-Step)
         </h2>
-        <div className="grid md:grid-cols-3 gap-10">
-          {[
-            "Plumbing & Sanitary Repairs",
-            "Electrical & Lighting Work",
-            "Painting & Interior Finishing",
-            "Appliance Repair (AC, Fridge, etc.)",
-            "Deep Cleaning & Pest Control",
-            "Carpentry & Furniture Fixing",
-            "Civil & Waterproofing Work",
-          ].map((category, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.03 }}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-black text-center"
-            >
-              <Wrench className="w-10 h-10 text-black mx-auto mb-4" />
-              <p className="font-semibold text-gray-800">{category}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Workflow */}
-      <section className="py-16 px-6 md:px-20 bg-white">
-        <h2 className="text-3xl font-bold mb-10 text-center">
-          Our Workflow
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-10 relative z-10">
           {[
             {
-              title: "Raise Request",
-              desc: "Submit a service request via your dashboard or mobile app.",
-              icon: <ClipboardList className="w-10 h-10 text-black" />,
+              title: "Request Service",
+              desc: "Submit a maintenance request online with details about your issue.",
+              icon: <ClipboardList className="w-10 h-10 text-[#8af6fc]" />,
             },
             {
-              title: "Technician Assigned",
-              desc: "A qualified technician is assigned within 2 hours.",
-              icon: <UserCheck className="w-10 h-10 text-black" />,
+              title: "Assign Technician",
+              desc: "We assign a certified technician suited for your specific service.",
+              icon: <FileText className="w-10 h-10 text-[#8af6fc]" />,
             },
             {
-              title: "Work Completed",
-              desc: "Repairs are done efficiently and quality is verified.",
-              icon: <CheckCircle className="w-10 h-10 text-black" />,
+              title: "On-Site Service",
+              desc: "Technician visits your property for inspection or repair work.",
+              icon: <Home className="w-10 h-10 text-[#8af6fc]" />,
             },
             {
-              title: "Report & Photos",
-              desc: "You receive a report and photos of the completed work.",
-              icon: <Camera className="w-10 h-10 text-black" />,
+              title: "Quality Check",
+              desc: "All work is verified to meet our high-quality standards.",
+              icon: <CheckCircle className="w-10 h-10 text-[#8af6fc]" />,
+            },
+            {
+              title: "Documentation",
+              desc: "You receive reports and invoices in your online dashboard.",
+              icon: <Camera className="w-10 h-10 text-[#8af6fc]" />,
+            },
+            {
+              title: "Follow-Up & Support",
+              desc: "Post-service support and preventive tips are provided.",
+              icon: <Globe className="w-10 h-10 text-[#8af6fc]" />,
             },
           ].map((step, i) => (
             <motion.div
               key={i}
-              whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center gap-4 p-6 bg-[#fdfbe9] rounded-xl shadow hover:shadow-lg transition"
+              className="p-6 rounded-xl bg-[#111]/80 border border-[#fa6304]/20 shadow-lg hover:shadow-[#fa6304]/40 hover:scale-105 transition transform"
+              whileHover={{ y: -8 }}
             >
-              {step.icon}
-              <h3 className="text-xl font-semibold text-center">{step.title}</h3>
-              <p className="text-gray-700 text-center">{step.desc}</p>
+              <div className="flex justify-center mb-4">{step.icon}</div>
+              <h3 className="text-xl font-semibold text-center text-[#fa6304] mb-2">
+                {step.title}
+              </h3>
+              <p className="text-gray-300 text-center">{step.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 px-6 md:px-20 bg-[#fdfbe9]">
-        <h2 className="text-3xl font-bold mb-10 text-center">
-          Features
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            "Verified service partners",
-            "Transparent pricing",
-            "Real-time status tracking",
-            "Emergency 24×7 support",
-          ].map((feature, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="flex items-start gap-4 p-6 bg-white rounded-xl shadow hover:shadow-lg transition"
-            >
-              <ShieldCheck className="w-8 h-8 text-black mt-1" />
-              <p className="text-gray-800 font-medium">{feature}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="py-16 px-6 md:px-20 bg-white">
-        <h2 className="text-3xl font-bold mb-10 text-center">
+      {/* ---------------- BENEFITS SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-gradient-to-br from-[#111] via-black to-[#0a0a0a]">
+        <h2 className="text-4xl font-bold mb-10 text-center text-[#8af6fc]">
           Benefits
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            "Quick turnaround",
-            "Reliable professionals",
-            "Preventive maintenance plans",
-            "Peace of mind for owners abroad",
+            "Certified and experienced technicians",
+            "Quick response and transparent pricing",
+            "Digital reports and invoices",
+            "Preventive maintenance for long-term savings",
+            "Online scheduling and tracking",
+            "Peace of mind for property owners",
           ].map((benefit, i) => (
             <motion.div
               key={i}
               whileHover={{ scale: 1.05 }}
-              className="flex items-start gap-4 p-6 bg-[#fdfbe9] rounded-xl shadow hover:shadow-lg transition"
+              className="flex items-start gap-4 p-6 bg-[#111]/80 border border-[#fa6304]/20 rounded-xl shadow hover:shadow-[#fa6304]/40 transition"
             >
-              <CheckCircle className="w-8 h-8 text-black mt-1" />
-              <p className="text-gray-800 font-medium">{benefit}</p>
+              <CheckCircle className="w-8 h-8 text-[#fa6304] mt-1" />
+              <p className="text-gray-300 font-medium">{benefit}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Extra Services */}
-      <section className="py-16 px-6 md:px-20 bg-[#fdfbe9]">
-        <h2 className="text-3xl font-bold mb-8 text-center">Extra Services</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 text-center">
-          {[
-            "AMC (Annual Maintenance Contract)",
-            "Post-tenant cleaning packages",
-            "Renovation coordination",
-          ].map((service, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="p-5 border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-gray-50"
-            >
-              <CheckCircle className="w-6 h-6 mx-auto mb-3 text-black" />
-              <p className="font-medium">{service}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* ---------------- TESTIMONIALS ---------------- */}
+      <AnimatedTestimonials />
 
-      {/* FAQs */}
-      <section className="py-16 px-6 md:px-20 bg-white">
-        <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div>
-            <h3 className="font-semibold text-lg">Q: How are service charges calculated?</h3>
-            <p className="text-gray-700 mt-2">
-              A: Based on work type, material, and technician category.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-lg">Q: Do you offer warranty?</h3>
-            <p className="text-gray-700 mt-2">
-              A: Yes, we offer 30-day service warranty on most jobs.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 text-center bg-gradient-to-r from-green-600 to-green-800 text-white">
-        <h2 className="text-3xl font-bold mb-4">
-          Book maintenance with Propdial
+      {/* ---------------- FAQ SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#8af6fc]/10 via-transparent to-[#fa6304]/10" />
+        <h2 className="text-4xl font-bold mb-8 text-center text-[#fa6304]">
+          Frequently Asked Questions
         </h2>
+        <div className="max-w-3xl mx-auto space-y-4 relative z-10">
+          {faqs.map((faq, index) => (
+            <div
+              key={index}
+              className="bg-[#111]/80 border border-[#8af6fc]/20 rounded-2xl shadow-sm"
+            >
+              <button
+                onClick={() => toggleFAQ(index)}
+                className="w-full flex justify-between items-center p-4 text-left font-semibold text-gray-100"
+              >
+                {faq.question}
+                <motion.div
+                  animate={{ rotate: activeIndex === index ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="w-5 h-5 text-[#8af6fc]" />
+                </motion.div>
+              </button>
+              <AnimatePresence>
+                {activeIndex === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="px-4 pb-4 text-gray-300 overflow-hidden"
+                  >
+                    {faq.answer}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------------- FINAL CTA ---------------- */}
+      <section className="py-20 text-center bg-gradient-to-r from-[#fa6304] to-[#8af6fc] text-black">
+        <h2 className="text-4xl font-bold mb-4">Keep Your Property in Shape</h2>
         <p className="mb-6 text-lg">
-          Because your property deserves the best care.
+          Let us handle your maintenance — trusted, fast, and reliable service.
         </p>
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white text-black px-8 py-3 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
+          className="bg-black text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:bg-gray-900 transition"
         >
-          Book Now
+          Schedule a Service
         </motion.button>
       </section>
     </div>

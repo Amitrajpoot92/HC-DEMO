@@ -1,206 +1,296 @@
- // src/pages/services/TenantDiscovery.jsx
+ "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import {
   CheckCircle,
-  UserCheck,
-  ClipboardList,
-  MapPin,
   FileText,
+  Camera,
+  Home,
+  ClipboardList,
+  Globe,
+  ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import heroImage from "../../assets/realestate/ap_poster.png";
 
-// IMAGE IMPORT
-import heroImage from "../../assets/realestate/ap3.png";
+// ✅ Animated Testimonials Component
+const AnimatedTestimonials = () => {
+  const testimonials = [
+    {
+      quote:
+        "The platform helped me find tenants quickly. The process is smooth and reliable.",
+      name: "Ravi Sharma",
+      designation: "Owner, Urban Apartments",
+      src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+    {
+      quote:
+        "Tenant screening was thorough and transparent. I now have trustworthy tenants without hassle.",
+      name: "Neha Singh",
+      designation: "Property Manager, City Flats",
+      src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+    {
+      quote:
+        "Easy-to-use platform and quick results. Finding tenants has never been this efficient.",
+      name: "Amit Verma",
+      designation: "Owner, Green Residency",
+      src: "https://images.unsplash.com/photo-1636041293178-808a6762ab39?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+  ];
 
+  const [active, setActive] = useState(0);
+
+  React.useEffect(() => {
+    const interval = setInterval(
+      () => setActive((prev) => (prev + 1) % testimonials.length),
+      5000
+    );
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="py-20 px-6 md:px-20 bg-black text-white text-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fa6304]/10 via-black to-[#8af6fc]/10" />
+      <h2 className="text-4xl font-bold mb-10 relative z-10">
+        What Our Users Say
+      </h2>
+      <div className="max-w-4xl mx-auto relative z-10">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row items-center gap-8"
+        >
+          <motion.img
+            src={testimonials[active].src}
+            alt={testimonials[active].name}
+            className="w-48 h-48 rounded-full object-cover shadow-2xl border-4 border-[#fa6304]/50"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          />
+          <div className="text-left">
+            <p className="text-lg italic text-gray-300 mb-4">
+              “{testimonials[active].quote}”
+            </p>
+            <h3 className="text-2xl font-semibold text-[#fa6304]">
+              {testimonials[active].name}
+            </h3>
+            <p className="text-sm text-gray-400">
+              {testimonials[active].designation}
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ✅ Main Page Component
 const TenantDiscovery = () => {
-  const [activeFAQ, setActiveFAQ] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(null);
 
   const faqs = [
     {
-      q: "How do you verify tenants?",
-      a: "We use KYC, employment verification, and police background checks to ensure reliability.",
+      question: "How does Tenant Discovery work?",
+      answer:
+        "List your property, get verified tenant profiles, and connect with tenants directly for smooth renting.",
     },
     {
-      q: "Do I get to approve the final tenant?",
-      a: "Yes, you have the final authority before confirmation.",
+      question: "Is tenant screening included?",
+      answer:
+        "Yes, we provide background and credit checks for tenants to ensure reliable occupancy.",
     },
     {
-      q: "Can I track tenant discovery progress?",
-      a: "Absolutely! You get real-time status updates on every step through your dashboard.",
+      question: "Can I schedule viewings through the platform?",
+      answer:
+        "Absolutely! You can schedule property viewings and track tenant interactions via your dashboard.",
+    },
+    {
+      question: "Are there any fees for using Tenant Discovery?",
+      answer:
+        "Our platform charges a small service fee for successful tenant placements. Listing and browsing are free.",
+    },
+    {
+      question: "Is my property information secure?",
+      answer:
+        "Yes, all data is encrypted and only shared with potential tenants with your permission.",
     },
   ];
 
-  const processSteps = [
-    {
-      title: "Requirement Collection",
-      desc: "We collect details about your property, preferences, and ideal tenant type.",
-      icon: <ClipboardList className="w-8 h-8 text-white" />,
-      color: "bg-blue-600",
-    },
-    {
-      title: "Tenant Shortlisting",
-      desc: "Our system matches tenants based on budget, profession, and location.",
-      icon: <UserCheck className="w-8 h-8 text-white" />,
-      color: "bg-green-600",
-    },
-    {
-      title: "Verification",
-      desc: "Every tenant goes through identity, employment, and rental history verification.",
-      icon: <FileText className="w-8 h-8 text-white" />,
-      color: "bg-purple-600",
-    },
-    {
-      title: "Property Visit",
-      desc: "Coordinated visits with shortlisted tenants to inspect the property.",
-      icon: <MapPin className="w-8 h-8 text-white" />,
-      color: "bg-orange-600",
-    },
-    {
-      title: "Selection & Handover",
-      desc: "Owners get the final choice and confirmation notification for tenant handover.",
-      icon: <CheckCircle className="w-8 h-8 text-white" />,
-      color: "bg-red-600",
-    },
-  ];
-
-  const features = [
-    "Background & police verification",
-    "Smart tenant matching algorithm",
-    "Real-time status tracking",
-    "Documented screening reports",
-    "Reduce vacancy time",
-    "Eliminate fraudulent tenants",
-    "Verified properties only",
-    "Transparent rental process",
-  ];
+  const toggleFAQ = (i) => setActiveIndex(activeIndex === i ? null : i);
 
   return (
-    <div className="bg-[#fdfbe9] text-gray-900 font-sans">
-      {/* Hero Section Split */}
-      <section className="relative w-full h-[60vh] flex flex-col md:flex-row items-center justify-center overflow-hidden">
-        <img
+    <div className="bg-black text-white font-sans overflow-hidden">
+      {/* ---------------- HERO SECTION ---------------- */}
+      <section className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden">
+        <motion.img
           src={heroImage}
-          alt="Tenant Discovery"
-          className="absolute inset-0 w-full h-full object-cover blur-sm"
+          alt="Tenant Discovery Banner"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 3, ease: "easeOut" }}
         />
-        <div className="absolute inset-0 bg-black/40"></div>
-
-        <div className="relative z-10 flex flex-col md:flex-row items-center md:justify-between w-full max-w-6xl px-6 md:px-16">
-          <motion.div
-            className="md:w-1/2 text-center md:text-left mb-6 md:mb-0"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black" />
+        <div className="relative z-10 text-center px-4">
+          <motion.h1
+            className="text-5xl md:text-6xl font-bold text-[#fa6304] mb-4"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              Find Verified Tenants with Ease
-            </h1>
-            <p className="text-lg md:text-xl text-white drop-shadow mb-6">
-              Propdial helps you find reliable, background-checked tenants for your property quickly.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="bg-white text-black px-6 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition"
-            >
-              Discover Tenants Now
-            </motion.button>
-          </motion.div>
+            Discover Reliable Tenants for Your Property
+          </motion.h1>
+          <motion.p
+            className="text-lg md:text-xl text-gray-200 mb-8"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            From screening to secure agreements, find the perfect match for your property.
+          </motion.p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="bg-[#fa6304] text-white px-8 py-3 rounded-full shadow-lg hover:bg-[#ff8645] transition"
+          >
+            List Your Property Now
+          </motion.button>
         </div>
       </section>
 
-      {/* Process Timeline */}
-      <section className="py-16 px-6 md:px-20">
-        <h2 className="text-3xl font-bold mb-12 text-center">
-          How It Works
+      {/* ---------------- INTRO SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-16 bg-gradient-to-br from-[#0a0a0a] via-black to-[#111]">
+        <motion.h2
+          className="text-4xl font-bold mb-6 text-center text-[#8af6fc]"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Hassle-Free Tenant Discovery
+        </motion.h2>
+        <p className="text-gray-300 text-center max-w-3xl mx-auto leading-relaxed">
+          Finding reliable tenants can be challenging. TenantDiscovery makes it simple — list your property, 
+          get verified tenant profiles, schedule viewings, and connect securely with tenants all in one platform.
+        </p>
+      </section>
+
+      {/* ---------------- PROCESS SECTION ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#fa6304]/10 via-transparent to-[#8af6fc]/10" />
+        <h2 className="text-4xl font-bold mb-10 text-center text-[#fa6304]">
+          How Tenant Discovery Works
         </h2>
-        <div className="relative border-l-2 border-gray-300 ml-4 md:ml-12">
-          {processSteps.map((step, idx) => (
+        <div className="grid md:grid-cols-3 gap-10 relative z-10">
+          {[
+            { title: "List Property", desc: "Submit property details and images.", icon: <ClipboardList /> },
+            { title: "Tenant Screening", desc: "Get verified tenant profiles.", icon: <FileText /> },
+            { title: "Schedule Viewings", desc: "Arrange visits via dashboard.", icon: <Home /> },
+            { title: "Secure Agreements", desc: "Generate and share digital contracts.", icon: <CheckCircle /> },
+            { title: "Track Interactions", desc: "Monitor all tenant activity easily.", icon: <Camera /> },
+            { title: "Ongoing Support", desc: "Assistance for any platform queries.", icon: <Globe /> },
+          ].map((step, i) => (
             <motion.div
-              key={idx}
-              className="mb-12 ml-6 md:ml-12 flex flex-col md:flex-row items-start gap-4"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              key={i}
+              className="p-6 rounded-xl bg-[#111]/80 border border-[#fa6304]/20 shadow-lg hover:shadow-[#fa6304]/40 hover:scale-105 transition transform"
+              whileHover={{ y: -8 }}
             >
-              <div className={`flex items-center justify-center w-12 h-12 rounded-full ${step.color}`}>
-                {step.icon}
+              <div className="flex justify-center mb-4 text-[#8af6fc]">
+                {React.cloneElement(step.icon, { className: "w-10 h-10" })}
               </div>
-              <div>
-                <h3 className="text-xl font-semibold">{step.title}</h3>
-                <p className="text-gray-700 mt-1">{step.desc}</p>
-              </div>
+              <h3 className="text-xl font-semibold text-center text-[#fa6304] mb-2">{step.title}</h3>
+              <p className="text-gray-300 text-center">{step.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-16 px-6 md:px-20 bg-[#e5f3ff]">
-        <h2 className="text-3xl font-bold mb-10 text-center">
-          Features & Benefits
+      {/* ---------------- BENEFITS ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-gradient-to-br from-[#111] via-black to-[#0a0a0a]">
+        <h2 className="text-4xl font-bold mb-10 text-center text-[#8af6fc]">
+          Benefits
         </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {features.map((f, idx) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            "Verified tenant profiles for peace of mind",
+            "Quick tenant placement",
+            "Transparent communication and agreements",
+            "Online scheduling of viewings",
+            "Secure property information",
+            "Centralized dashboard for easy management",
+          ].map((b, i) => (
             <motion.div
-              key={idx}
+              key={i}
               whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow hover:shadow-lg transition"
+              className="flex items-start gap-4 p-6 bg-[#181818] rounded-xl border border-[#8af6fc]/20 shadow-lg hover:border-[#8af6fc]/50 transition"
             >
-              <CheckCircle className="w-8 h-8 text-blue-600 mb-3" />
-              <p className="font-medium">{f}</p>
+              <CheckCircle className="w-8 h-8 text-[#fa6304] mt-1" />
+              <p className="text-gray-300">{b}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Testimonial Carousel */}
-      <section className="py-16 px-6 md:px-20 bg-white text-center">
-        <h2 className="text-3xl font-bold mb-8">Client Testimonial</h2>
-        <div className="max-w-2xl mx-auto bg-gray-50 p-8 rounded-xl shadow">
-          <p className="italic text-gray-700 mb-4">
-            “I got a verified tenant in less than a week — no brokers, no hidden charges. Propdial handled everything smoothly.”
-          </p>
-          <h4 className="font-semibold text-black">— Sanjana Verma, Gurgaon</h4>
-        </div>
-      </section>
+      {/* ---------------- TESTIMONIALS ---------------- */}
+      <AnimatedTestimonials />
 
-      {/* FAQ Accordion */}
-      <section className="py-16 px-6 md:px-20 bg-[#fdfbe9]">
-        <h2 className="text-3xl font-bold mb-8 text-center">FAQs</h2>
+      {/* ---------------- FAQ ---------------- */}
+      <section className="py-20 px-6 md:px-20 bg-black">
+        <h2 className="text-4xl font-bold mb-8 text-center text-[#fa6304]">
+          Frequently Asked Questions
+        </h2>
         <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, idx) => (
+          {faqs.map((faq, index) => (
             <div
-              key={idx}
-              className="border border-gray-300 rounded-lg overflow-hidden"
+              key={index}
+              className="bg-[#111] border border-[#fa6304]/30 rounded-2xl shadow-sm"
             >
               <button
-                onClick={() =>
-                  setActiveFAQ(activeFAQ === idx ? null : idx)
-                }
-                className="w-full text-left px-6 py-4 flex justify-between items-center font-semibold text-gray-800"
+                onClick={() => toggleFAQ(index)}
+                className="w-full flex justify-between items-center p-4 text-left font-semibold text-gray-200"
               >
-                {faq.q}
-                <span>{activeFAQ === idx ? "-" : "+"}</span>
+                {faq.question}
+                <motion.div
+                  animate={{ rotate: activeIndex === index ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="w-5 h-5 text-[#8af6fc]" />
+                </motion.div>
               </button>
-              {activeFAQ === idx && (
-                <div className="px-6 py-4 text-gray-700 border-t border-gray-200">
-                  {faq.a}
-                </div>
-              )}
+
+              <AnimatePresence>
+                {activeIndex === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="px-4 pb-4 text-gray-400"
+                  >
+                    {faq.answer}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-20 text-center bg-gradient-to-r from-green-600 to-green-800 text-white">
-        <h2 className="text-3xl font-bold mb-4">Let’s find your next tenant</h2>
-        <p className="mb-6 text-lg">Start your tenant discovery process today!</p>
+      {/* ---------------- FINAL CTA ---------------- */}
+      <section className="py-20 text-center bg-gradient-to-r from-[#fa6304] to-[#8af6fc] text-black">
+        <h2 className="text-4xl font-bold mb-4">
+          Start finding reliable tenants today.
+        </h2>
+        <p className="mb-6 text-lg text-black/80">
+          List your property on TenantDiscovery and connect with trusted tenants effortlessly.
+        </p>
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white text-black px-8 py-3 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
+          className="bg-black text-white px-8 py-3 font-semibold rounded-full shadow-lg hover:bg-gray-900 transition"
         >
-          Discover Tenants
+          Get Started
         </motion.button>
       </section>
     </div>

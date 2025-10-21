@@ -1,217 +1,306 @@
- // src/pages/services/TenantOnBoard.jsx
+// src/pages/services/TenantOnBoard.jsx
+"use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import {
   CheckCircle,
   FileText,
+  Camera,
+  Home,
   ClipboardList,
-  UserCheck,
-  Gift,
-  ShieldCheck,
-  CreditCard,
+  Globe,
+  ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import heroImage from "../../assets/realestate/ap_poster.png";
 
-// IMAGE IMPORT
-import heroImage from "../../assets/realestate/ap7.png";
+// ✅ Animated Testimonials Component
+const AnimatedTestimonials = () => {
+  const testimonials = [
+    {
+      quote:
+        "TenantOnBoard made moving in seamless. Everything from documentation to verification was handled efficiently.",
+      name: "Ravi Sharma",
+      designation: "Tenant, Urban Apartments",
+      src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+    {
+      quote:
+        "Smooth onboarding process and quick support. I felt confident and informed throughout.",
+      name: "Neha Singh",
+      designation: "Tenant, City Flats",
+      src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+    {
+      quote:
+        "Easy document submission and verification. TenantOnBoard is truly hassle-free for new tenants.",
+      name: "Amit Verma",
+      designation: "Tenant, Green Residency",
+      src: "https://images.unsplash.com/photo-1636041293178-808a6762ab39?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.0.3",
+    },
+  ];
 
+  const [active, setActive] = useState(0);
+  const autoplay = true;
+
+  React.useEffect(() => {
+    if (autoplay) {
+      const interval = setInterval(() => {
+        setActive((prev) => (prev + 1) % testimonials.length);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  const isActive = (index) => index === active;
+  const randomRotateY = () => Math.floor(Math.random() * 21) - 10;
+
+  return (
+    <section className="py-16 px-6 md:px-20 bg-[#0a0a0a] text-center text-white">
+      <h2 className="text-3xl font-bold mb-8 text-[#8af6fc] drop-shadow-[0_0_10px_#8af6fc]">
+        What Our Tenants Say
+      </h2>
+
+      <div className="mx-auto max-w-sm px-4 py-10 md:max-w-4xl md:px-8 lg:px-12">
+        <div className="relative grid grid-cols-1 gap-20 md:grid-cols-2">
+          {/* Left - Images */}
+          <div className="relative h-80 w-full">
+            {testimonials.map((t, index) => (
+              <motion.div
+                key={t.src}
+                initial={{ opacity: 0, scale: 0.9, rotate: randomRotateY() }}
+                animate={{
+                  opacity: isActive(index) ? 1 : 0.5,
+                  scale: isActive(index) ? 1 : 0.9,
+                  rotate: isActive(index) ? 0 : randomRotateY(),
+                  y: isActive(index) ? [0, -50, 0] : 0,
+                  zIndex: isActive(index) ? 20 : 0,
+                }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0"
+              >
+                <img
+                  src={t.src}
+                  alt={t.name}
+                  className="h-full w-full rounded-3xl object-cover border-2 border-[#fa6304]/50"
+                />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right - Text */}
+          <div className="flex flex-col justify-center">
+            <motion.div
+              key={active}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h3 className="text-2xl font-semibold text-[#fa6304]">
+                {testimonials[active].name}
+              </h3>
+              <p className="text-sm text-gray-400 mb-4">
+                {testimonials[active].designation}
+              </p>
+              <p className="text-lg text-gray-200">
+                {testimonials[active].quote}
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ✅ Main Page
 const TenantOnBoard = () => {
-  const [activeFAQ, setActiveFAQ] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(null);
 
   const faqs = [
     {
-      q: "Can I prepare my own agreement?",
-      a: "You can, but Propdial offers standard legal templates for compliance and ensures they are legally valid.",
+      question: "What is TenantOnBoard?",
+      answer:
+        "TenantOnBoard simplifies the onboarding process — from document upload to verification and agreement signing — all handled securely in one place.",
     },
     {
-      q: "What if tenant delays payment?",
-      a: "We send automatic reminders and handle follow-up communication to ensure timely rent collection.",
+      question: "How do I submit my documents?",
+      answer:
+        "You can upload all necessary documents like ID proof, income proof, and rental agreements through our secure dashboard.",
     },
     {
-      q: "Is the onboarding process fully digital?",
-      a: "Yes, all steps including document submission, e-signing, and payments are handled digitally for convenience.",
+      question: "Is the verification process safe?",
+      answer:
+        "Yes, all verification is handled securely by certified personnel ensuring privacy and authenticity.",
+    },
+    {
+      question: "Can I sign agreements digitally?",
+      answer:
+        "Absolutely! TenantOnBoard supports secure digital agreement signing — no paperwork needed.",
+    },
+    {
+      question: "How long does onboarding take?",
+      answer:
+        "Most tenants complete onboarding within 24–48 hours, depending on verification and approval.",
     },
   ];
 
-  const processSteps = [
-    {
-      title: "Verification & Approval",
-      desc: "Confirm tenant documents and background check for safety and reliability.",
-      icon: <UserCheck className="w-8 h-8 text-white" />,
-      color: "bg-blue-600",
-    },
-    {
-      title: "Agreement Drafting",
-      desc: "Digital rent agreement generated and shared for e-signature.",
-      icon: <FileText className="w-8 h-8 text-white" />,
-      color: "bg-green-600",
-    },
-    {
-      title: "Deposit Management",
-      desc: "Secure deposit collection through digital payment gateway.",
-      icon: <CreditCard className="w-8 h-8 text-white" />,
-      color: "bg-purple-600",
-    },
-    {
-      title: "Move-in Assistance",
-      desc: "Key handover, initial inspection, and inventory checklist.",
-      icon: <ClipboardList className="w-8 h-8 text-white" />,
-      color: "bg-orange-600",
-    },
-    {
-      title: "Post Move-in Support",
-      desc: "Tenant is onboarded into the system for future maintenance requests.",
-      icon: <CheckCircle className="w-8 h-8 text-white" />,
-      color: "bg-red-600",
-    },
-  ];
-
-  const features = [
-    "Online rent agreement and digital signatures",
-    "Complete inventory documentation",
-    "Tenant welcome kit & onboarding video",
-    "Transparent payment receipts",
-    "Legal compliance ensured",
-    "Zero-paper documentation",
-    "Smooth coordination between owner and tenant",
-    "24×7 support",
-  ];
-
-  const addOnServices = [
-    "Utility transfer assistance",
-    "Deep cleaning before move-in",
-    "Security deposit insurance option",
-  ];
+  const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
 
   return (
-    <div className="bg-[#fdfbe9] text-gray-900 font-sans">
-      {/* Hero Section Split */}
-      <section className="relative w-full h-[60vh] flex flex-col md:flex-row items-center justify-center overflow-hidden">
+    <div className="bg-[#0a0a0a] text-white font-sans">
+      {/* Hero Section */}
+      <section className="relative w-full h-[50vh] flex items-center justify-center overflow-hidden">
         <img
           src={heroImage}
-          alt="Tenant Onboarding"
-          className="absolute inset-0 w-full h-full object-cover blur-sm"
+          alt="Tenant Onboarding Banner"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
-
-        <div className="relative z-10 flex flex-col md:flex-row items-center md:justify-between w-full max-w-6xl px-6 md:px-16">
-          <motion.div
-            className="md:w-1/2 text-center md:text-left mb-6 md:mb-0"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#fa6304]/60 to-[#8af6fc]/60"></div>
+        <div className="relative z-10 text-center">
+          <motion.h1
+            className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_0_10px_#fa6304]"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              Effortless Tenant Onboarding Experience
-            </h1>
-            <p className="text-lg md:text-xl text-white drop-shadow mb-6">
-              Propdial ensures a smooth and legal tenant onboarding process — digitally managed.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="bg-white text-black px-6 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition"
-            >
-              Start Tenant Onboarding
-            </motion.button>
-          </motion.div>
+            Seamless Tenant Onboarding Experience
+          </motion.h1>
+          <motion.p
+            className="text-lg md:text-xl text-gray-200 mt-4"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            From document submission to verification, move in with confidence and ease.
+          </motion.p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="mt-6 bg-[#fa6304] text-black font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-[#ff8533]"
+          >
+            Start Onboarding Now
+          </motion.button>
         </div>
       </section>
 
-      {/* Overview Section */}
-      <section className="py-16 px-6 md:px-20">
-        <h2 className="text-3xl font-bold mb-6 text-center">Why Tenant Onboarding Matters</h2>
-        <p className="text-gray-700 text-center max-w-3xl mx-auto leading-relaxed">
-          Tenant onboarding is the final yet crucial step in rental management. It includes agreement preparation, deposit collection, key handover, and move-in inspection — all handled by Propdial to guarantee a transparent start for both parties.
+      {/* Introduction */}
+      <section className="py-16 px-6 md:px-16 text-center">
+        <h2 className="text-3xl font-bold mb-6 text-[#8af6fc] drop-shadow-[0_0_10px_#8af6fc]">
+          Hassle-Free Tenant Onboarding
+        </h2>
+        <p className="text-gray-300 max-w-3xl mx-auto">
+          Upload your documents, complete verifications, and sign agreements digitally — all in one secure platform.
         </p>
       </section>
 
-      {/* Process Horizontal Cards */}
-      <section className="py-16 px-6 md:px-20 bg-[#e5f3ff]">
-        <h2 className="text-3xl font-bold mb-12 text-center">Our Step-by-Step Process</h2>
-        <div className="flex flex-col md:flex-row md:justify-between gap-6 overflow-x-auto pb-4">
-          {processSteps.map((step, idx) => (
+      {/* Our Process */}
+      <section className="py-16 px-6 md:px-20 bg-gradient-to-r from-[#fa6304]/10 to-[#8af6fc]/10 rounded-3xl">
+        <h2 className="text-3xl font-bold mb-10 text-center text-[#fa6304]">
+          How Tenant Onboarding Works
+        </h2>
+        <p className="text-center text-gray-400 max-w-2xl mx-auto mb-10">
+          A step-by-step approach to make your move-in smooth and quick.
+        </p>
+        <div className="grid md:grid-cols-3 gap-10">
+          {[
+            { title: "Register Profile", icon: ClipboardList, desc: "Create your tenant profile with contact details." },
+            { title: "Upload Documents", icon: FileText, desc: "Securely upload all required proofs." },
+            { title: "Verification", icon: Home, desc: "Certified team verifies your documents quickly." },
+            { title: "Digital Agreement", icon: CheckCircle, desc: "E-sign rental agreements with ease." },
+            { title: "Move-In Support", icon: Camera, desc: "Get help coordinating your move." },
+            { title: "Ongoing Assistance", icon: Globe, desc: "24/7 platform and onboarding support." },
+          ].map((step, i) => (
             <motion.div
-              key={idx}
-              className="flex-shrink-0 w-72 p-6 rounded-xl shadow-lg bg-white border-t-4 border-black"
-              whileHover={{ scale: 1.03 }}
+              key={i}
+              whileHover={{ scale: 1.05 }}
+              className="bg-[#111] border border-[#8af6fc]/30 p-6 rounded-2xl text-center shadow-lg hover:shadow-[#fa6304]/30"
             >
-              <div className={`flex items-center justify-center w-12 h-12 rounded-full ${step.color} mb-4`}>
-                {step.icon}
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-              <p className="text-gray-700">{step.desc}</p>
+              <step.icon className="w-10 h-10 mx-auto mb-4 text-[#fa6304]" />
+              <h3 className="text-xl font-semibold mb-2 text-white">{step.title}</h3>
+              <p className="text-gray-400">{step.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features & Benefits Grid */}
+      {/* Benefits */}
       <section className="py-16 px-6 md:px-20">
-        <h2 className="text-3xl font-bold mb-10 text-center">Features & Benefits</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {features.map((f, idx) => (
+        <h2 className="text-3xl font-bold mb-10 text-center text-[#8af6fc]">
+          Benefits
+        </h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            "Secure document submission",
+            "Fast onboarding process",
+            "Digital agreements",
+            "Transparent communication",
+            "Centralized dashboard",
+            "Expert move-in support",
+          ].map((benefit, i) => (
             <motion.div
-              key={idx}
+              key={i}
               whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center text-center p-6 bg-white rounded-xl shadow hover:shadow-lg transition"
+              className="flex items-start gap-4 p-6 bg-[#111] rounded-xl border border-[#fa6304]/30 hover:shadow-lg"
             >
-              <CheckCircle className="w-8 h-8 text-blue-600 mb-3" />
-              <p className="font-medium">{f}</p>
+              <CheckCircle className="w-8 h-8 text-[#fa6304] mt-1" />
+              <p className="text-gray-300">{benefit}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Add-on Services */}
-      <section className="py-16 px-6 md:px-20 bg-[#f0f8ff]">
-        <h2 className="text-3xl font-bold mb-10 text-center">Add-on Services</h2>
-        <div className="flex flex-wrap justify-center gap-6">
-          {addOnServices.map((service, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ scale: 1.05 }}
-              className="p-5 bg-white rounded-xl shadow-lg border-t-4 border-green-600 w-72 text-center"
-            >
-              <Gift className="w-8 h-8 text-green-600 mb-3 mx-auto" />
-              <p className="font-medium">{service}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* Testimonials */}
+      <AnimatedTestimonials />
 
-      {/* FAQ Accordion */}
-      <section className="py-16 px-6 md:px-20 bg-[#fdfbe9]">
-        <h2 className="text-3xl font-bold mb-8 text-center">FAQs</h2>
+      {/* FAQs */}
+      <section className="py-16 px-6 md:px-20 bg-[#111] rounded-3xl">
+        <h2 className="text-3xl font-bold mb-8 text-center text-[#fa6304]">
+          Frequently Asked Questions
+        </h2>
         <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, idx) => (
-            <div key={idx} className="border border-gray-300 rounded-lg overflow-hidden">
+          {faqs.map((faq, index) => (
+            <div key={index} className="bg-[#0a0a0a] border border-[#8af6fc]/30 rounded-2xl">
               <button
-                onClick={() =>
-                  setActiveFAQ(activeFAQ === idx ? null : idx)
-                }
-                className="w-full text-left px-6 py-4 flex justify-between items-center font-semibold text-gray-800"
+                onClick={() => toggleFAQ(index)}
+                className="w-full flex justify-between items-center p-4 text-left font-semibold text-white"
               >
-                {faq.q}
-                <span>{activeFAQ === idx ? "-" : "+"}</span>
+                {faq.question}
+                <motion.div animate={{ rotate: activeIndex === index ? 180 : 0 }}>
+                  <ChevronDown className="w-5 h-5 text-[#8af6fc]" />
+                </motion.div>
               </button>
-              {activeFAQ === idx && (
-                <div className="px-6 py-4 text-gray-700 border-t border-gray-200">
-                  {faq.a}
-                </div>
-              )}
+              <AnimatePresence>
+                {activeIndex === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="px-4 pb-4 text-gray-400"
+                  >
+                    {faq.answer}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 text-center bg-gradient-to-r from-green-600 to-green-800 text-white">
-        <h2 className="text-3xl font-bold mb-4">Streamline your tenant onboarding today</h2>
-        <p className="mb-6 text-lg">Propdial ensures a hassle-free, legal, and smooth process for both owners and tenants.</p>
+      <section className="py-20 text-center bg-gradient-to-r from-[#fa6304] to-[#8af6fc] text-black rounded-t-3xl mt-16">
+        <h2 className="text-3xl font-bold mb-4">
+          Start Your Tenant Onboarding Today
+        </h2>
+        <p className="mb-6 text-lg">
+          Complete onboarding efficiently and move in hassle-free.
+        </p>
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white text-black px-8 py-3 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
+          className="bg-black text-white px-8 py-3 font-semibold rounded-lg shadow-lg hover:bg-[#111]"
         >
-          Start Tenant Onboarding
+          Start Onboarding
         </motion.button>
       </section>
     </div>
